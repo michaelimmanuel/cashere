@@ -25,5 +25,11 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
+        val loginButton = view.findViewById<Button>(R.id.loginButton)
+        loginButton.setOnClickListener {
+            val intent = android.content.Intent(activity, AppActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }
