@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/overview"
+        android:title="overview"
+        android:icon="@drawable/placeholder"
+        />
+
+    <item
+        android:id="@+id/calender"
+        android:title="calender"
+        android:icon="@drawable/placeholder"
+        />
+
+    <item
+        android:id="@+id/add"
+        android:title="add"
+        android:icon="@drawable/placeholder"
+        />
+
+    <item
+        android:id="@+id/statistics"
+        android:title="statistics"
+        android:icon="@drawable/placeholder"
+        />
+    <item
+        android:id="@+id/profile"
+        android:title="Profile"
+        android:icon="@drawable/placeholder"
+        />
+</menu>
