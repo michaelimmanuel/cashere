@@ -1,21 +1,31 @@
 package com.example.uas
 
+
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.uas.preference.SharedPreferencesManager
 
 class MainActivity : AppCompatActivity() {
 
+    private val sharedPreferencesManager by lazy {
+        SharedPreferencesManager(this)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (sharedPreferencesManager.isLoggedIn) {
+            val intent = Intent(this, AppActivity::class.java)
+            startActivity(intent)
+        }
 
 
         // Initialize the Navigation Component

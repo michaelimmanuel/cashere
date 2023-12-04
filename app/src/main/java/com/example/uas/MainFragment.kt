@@ -1,59 +1,178 @@
 package com.example.uas
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
+import com.example.uas.data.DailySpending
+import com.example.uas.data.ExpenseGroupedData
+import com.example.uas.data.SpendingItem
+import com.example.uas.preference.SharedPreferencesManager
+import com.example.uas.ui.UASTheme
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MainFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MainFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private val sharedPreferencesManager by lazy {
+        SharedPreferencesManager(requireContext())
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MainFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MainFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                UASTheme {
+                    val userId = sharedPreferencesManager.userId ?: ""
+                    MainScreen(userId = userId)
                 }
             }
+        }
+    }
+
+
+
+
+    @Composable
+    fun MainScreen(userId: String) {
+        val groupedExpenses = remember { mutableStateOf<Map<String, ExpenseGroupedData>?>(null) }
+
+        LaunchedEffect(userId) {
+            Log.d("MainFragment", "LaunchedEffect called")
+            // Call the function to fetch data
+            val data = getGroupedExpenses(userId)
+            groupedExpenses.value = data
+        }
+
+        // Check if data is available
+        groupedExpenses.value?.let { data ->
+            // Call the SpendingList composable with the result
+            SpendingList(dailySpendingList = data)
+        }
+    }
+
+    // Inside the getGroupedExpenses function, where you process the API response
+    private suspend fun getGroupedExpenses(userId: String): Map<String, ExpenseGroupedData>? {
+        return try {
+            val response = RetrofitClient.expenseApiService.getGroupedExpenses(userId)
+            if (response.isSuccessful) {
+                val data = response.body()
+                Log.d("MainFragment", "API response: $data")
+
+                // Return the parsed data
+                data?.let {
+                    val parsedData = it.mapValues { entry ->
+                        val dailySpending = entry.value
+                        val date = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).parse(dailySpending.date)
+                        val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+                        ExpenseGroupedData(
+                            date = formattedDate,
+                            total = dailySpending.total,
+                            count = dailySpending.count,
+                            items = dailySpending.items
+                        )
+                    }
+                    return parsedData
+                }
+            } else {
+                // Handle API error
+                null
+            }
+        } catch (e: Exception) {
+            // Handle network or other exceptions
+            Log.d("MainFragment", "Exception: ${e.message}")
+            null
+        }
+    }
+
+    @Composable
+    fun SpendingList(dailySpendingList: Map<String, ExpenseGroupedData>?) {
+        LazyColumn {
+            dailySpendingList?.let { data ->
+                items(data.keys.toList()) { date ->
+                    SpendingCard(dailySpending = data[date]!!)
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun SpendingCard(dailySpending: ExpenseGroupedData) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(MaterialTheme.colors.surface),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Date: ${dailySpending.date}",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "Total: ${dailySpending.total}",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
+
+                dailySpending.items.forEach { spendingItem ->
+                    SpendingItemCard(spendingItem = spendingItem)
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun SpendingItemCard(spendingItem: SpendingItem) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text(text = "Name: ${spendingItem.name}")
+            Text(text = "Amount: ${spendingItem.amount}")
+            Text(text = "Description: ${spendingItem.desc}")
+            Text(text = "Type: ${spendingItem.type}")
+            Text(text = "Date: ${spendingItem.date}")
+        }
     }
 }

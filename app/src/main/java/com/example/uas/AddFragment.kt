@@ -5,28 +5,29 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.DatePicker
+import android.widget.EditText
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import com.example.uas.data.SpendingData
+import com.example.uas.preference.SharedPreferencesManager
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AddFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private val sharedPreferencesManager by lazy {
+        SharedPreferencesManager(requireContext())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -37,23 +38,80 @@ class AddFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        // Set up button click listeners
+        val buttonSubmit = view.findViewById<Button>(R.id.buttonSubmit)
+
+
+
+
+        buttonSubmit.setOnClickListener {
+            submitSpendingData()
+        }
     }
+
+    private fun formatDate(day: Int, month: Int, year: Int): String {
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, day)
+        val date = calendar.time
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return dateFormat.format(date)
+    }
+    private fun submitSpendingData() {
+
+        val editTextAmount = view?.findViewById<EditText>(R.id.editTextAmount)
+        val editTextName = view?.findViewById<EditText>(R.id.editTextName)
+        val editTextDesc = view?.findViewById<EditText>(R.id.editTextDescription)
+        val datePick = view?.findViewById<DatePicker>(R.id.datePicker)
+
+
+        val amount = editTextAmount?.text.toString().toDouble()
+        val name = editTextName?.text.toString()
+        val desc = editTextDesc?.text.toString()
+        val datePicker = datePick as DatePicker
+        val day = datePicker.dayOfMonth
+        val month = datePicker.month
+        val year = datePicker.year
+        val formattedDate = formatDate(day, month, year)
+//        get user id from shared preferences
+        val userId = sharedPreferencesManager.userId
+
+        if (userId.isNullOrEmpty()) {
+            // Handle missing user ID, maybe redirect to login
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.expenseApiService.createSpending(
+                    userId,
+                    SpendingData(amount, desc, formattedDate, name)
+                )
+                if (response.isSuccessful) {
+                    // Expense data submitted successfully
+                    // You can handle the success scenario as needed
+                    Toast.makeText(
+                        requireContext(),
+                        "Expense data submitted successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    // Handle API error
+//                    if response is not successful, show error message
+                    Toast.makeText(
+                        requireContext(),
+                        "Error: ${response.code()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                // Handle network or other exceptions
+            }
+        }
+    }
+
+
 }
