@@ -12,6 +12,13 @@
 
     <!-- Create a barrier to place the "Register" TextView to the right -->
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/casherelogo"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
+
     <TextView
         android:id="@+id/loginTitleTextView"
         android:layout_width="wrap_content"
