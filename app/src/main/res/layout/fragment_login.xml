@@ -13,11 +13,12 @@
     <!-- Create a barrier to place the "Register" TextView to the right -->
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/casherelogo"
+        android:layout_width="127dp"
+        android:layout_height="131dp"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"/>
+        android:src="@drawable/casherelogo"
+        tools:layout_editor_absoluteX="128dp"
+        tools:layout_editor_absoluteY="-6dp" />
 
     <TextView
         android:id="@+id/loginTitleTextView"
@@ -28,8 +29,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.831" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
@@ -40,20 +43,15 @@
 
     <!-- Create the "Register" TextView -->
 
-
-    <!--        android:clickable="true"-->
-    <!--        android:onClick="register"-->
-
-
     <TextView
         android:id="@+id/registerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="416dp"
         android:layout_marginEnd="24dp"
-        android:text="@string/register"
         android:clickable="true"
         android:focusable="true"
+        android:text="@string/register"
         android:textColor="@color/greenPrimary"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -65,7 +63,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="115dp"
+        android:layout_marginTop="200dp"
         android:layout_marginEnd="16dp"
         android:autofillHints="example@domain.com"
         android:hint="@string/email"
@@ -79,7 +77,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:autofillHints="*********"
         android:hint="@string/password"
@@ -88,18 +86,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
 
+    <!-- Add the tagline under the button -->
     <Button
         android:id="@+id/loginButton"
         style="@style/Theme.AppCompat"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="16dp"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
+    <TextView
+        android:id="@+id/taglineTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="240dp"
+        android:text="Spend Wisely, Save Easier with Cashere."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
