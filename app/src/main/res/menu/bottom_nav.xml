@@ -2,30 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/overview"
-        android:title="overview"
-        android:icon="@drawable/placeholder"
+        android:title="Home"
+        android:icon="@drawable/house"
         />
 
     <item
         android:id="@+id/calender"
-        android:title="calender"
-        android:icon="@drawable/placeholder"
+        android:title="Calendar"
+        android:icon="@drawable/calendar"
         />
 
     <item
         android:id="@+id/add"
-        android:title="add"
-        android:icon="@drawable/placeholder"
+        android:title="Add"
+        android:icon="@drawable/add"
         />
 
     <item
         android:id="@+id/statistics"
-        android:title="statistics"
-        android:icon="@drawable/placeholder"
+        android:title="Statistics"
+        android:icon="@drawable/graph"
         />
     <item
         android:id="@+id/profile"
         android:title="Profile"
-        android:icon="@drawable/placeholder"
+        android:icon="@drawable/user"
         />
 </menu>
