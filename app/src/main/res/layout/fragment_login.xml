@@ -13,6 +13,7 @@
     <!-- Create a barrier to place the "Register" TextView to the right -->
 
     <ImageView
+        android:id="@+id/imageViewLogo"
         android:layout_width="127dp"
         android:layout_height="131dp"
         android:layout_gravity="center"
@@ -20,12 +21,21 @@
         tools:layout_editor_absoluteX="128dp"
         tools:layout_editor_absoluteY="-6dp" />
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageViewLogo"
+        android:layout_centerInParent="true"
+        android:layout_margin="16dp"
+        android:background="#FFFFFF">
+
     <TextView
         android:id="@+id/loginTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/bebas_neue"
         android:text="@string/login"
-        android:textSize="24sp"
+        android:textSize="35dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,6 +61,7 @@
         android:layout_marginEnd="24dp"
         android:clickable="true"
         android:focusable="true"
+        android:fontFamily="@font/bebas_neue"
         android:text="@string/register"
         android:textColor="@color/greenPrimary"
         android:textSize="18sp"
@@ -66,6 +77,7 @@
         android:layout_marginTop="200dp"
         android:layout_marginEnd="16dp"
         android:autofillHints="example@domain.com"
+        android:fontFamily="@font/bebas_neue"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,6 +92,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:autofillHints="*********"
+        android:fontFamily="@font/bebas_neue"
         android:hint="@string/password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
@@ -95,16 +108,21 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="16dp"
+        android:fontFamily="@font/bebas_neue"
         android:text="@string/login"
+        android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+
 
     <TextView
         android:id="@+id/taglineTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="240dp"
+        android:fontFamily="@font/bebas_neue"
+
         android:text="Spend Wisely, Save Easier with Cashere."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
