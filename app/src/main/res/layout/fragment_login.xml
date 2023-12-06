@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/bebas_neue"
         android:text="@string/login"
-        android:textSize="35dp"
+        android:textSize="40dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintEnd_toEndOf="parent"
