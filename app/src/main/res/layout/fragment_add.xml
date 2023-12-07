@@ -98,18 +98,4 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:layout_width="211dp"
-        android:layout_height="24dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="114dp"
-        android:layout_marginTop="64dp"
-        android:layout_marginEnd="86dp"
-        android:layout_marginBottom="82dp"
-        android:fontFamily="@font/bebas_neue"
-        android:text="Spend Wisely, Save Easier with Cashere."
-        android:textColor="@color/white"
-        android:textSize="15dp" />
 </RelativeLayout>
