@@ -43,6 +43,11 @@ android {
     }
 }
 
+buildscript {
+    repositories {
+        maven { url = uri("https://jitpack.io") }
+    }
+}
 dependencies {
     // navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.4")
@@ -80,4 +85,6 @@ dependencies {
 
 //    moshi
     implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
+
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

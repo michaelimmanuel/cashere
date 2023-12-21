@@ -2,6 +2,8 @@ package com.example.uas.api
 import com.example.uas.data.Expense
 import com.example.uas.data.ExpenseGroupedData
 import com.example.uas.data.LoginRequest
+import com.example.uas.data.MonthlyTotal
+import com.example.uas.data.MonthlyTotalsResponse
 import com.example.uas.data.SpendingData
 import com.example.uas.data.SpendingItem
 import retrofit2.http.POST
@@ -41,5 +43,11 @@ interface ExpenseApiService {
         @Path("id") id: String,
         @Query("date") date: String
     ): Response<List<SpendingItem>>
+
+    @GET("/users/{id}/monthlyspending")
+    suspend fun getMonthlySpending(
+        @Path("id") id: String,
+        @Query("year") year: String
+    ): Response<List<MonthlyTotal>>
 }
 
