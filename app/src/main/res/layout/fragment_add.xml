@@ -35,66 +35,40 @@
                 android:id="@+id/editTextAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Amount"
                 android:fontFamily="@font/bebas_neue"
-                android:inputType="numberDecimal"/>
+                android:hint="Amount"
+                android:inputType="numberDecimal" />
 
             <EditText
                 android:id="@+id/editTextName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/bebas_neue"
-                android:hint="Name"/>
+                android:hint="Name" />
 
             <EditText
                 android:id="@+id/editTextDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/bebas_neue"
-                android:hint="Description"/>
+                android:hint="Description" />
 
-            <!-- HorizontalScrollView for the Date Picker -->
-            <HorizontalScrollView
-                android:layout_width="match_parent"
+
+            <DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-                <!-- LinearLayout for Date Pickers -->
-                <LinearLayout
-                    android:id="@+id/linearDateItems"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- NumberPicker for Day -->
-                    <NumberPicker
-                        android:id="@+id/numberPickerDay"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"/>
-
-                    <!-- NumberPicker for Month -->
-                    <NumberPicker
-                        android:id="@+id/numberPickerMonth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"/>
-
-                    <!-- NumberPicker for Year -->
-                    <NumberPicker
-                        android:id="@+id/numberPickerYear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner"
+                android:layout_gravity="center"
+                />
 
             <Button
                 android:id="@+id/buttonSubmit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/bebas_neue"
-                android:text="Submit"/>
+                android:text="Submit" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

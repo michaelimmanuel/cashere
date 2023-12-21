@@ -3,6 +3,7 @@ import com.example.uas.data.Expense
 import com.example.uas.data.ExpenseGroupedData
 import com.example.uas.data.LoginRequest
 import com.example.uas.data.SpendingData
+import com.example.uas.data.SpendingItem
 import retrofit2.http.POST
 import retrofit2.http.Body
 import retrofit2.http.Path
@@ -10,6 +11,8 @@ import retrofit2.http.GET
 import okhttp3.ResponseBody
 import retrofit2.Response
 import com.example.uas.data.User
+import retrofit2.http.Query
+
 interface ExpenseApiService {
     @POST("/register")
     suspend fun registerUser(@Body user: User): Response<ResponseBody>
@@ -32,5 +35,11 @@ interface ExpenseApiService {
 
     @GET("/users/{id}/spending/day")
     suspend fun getGroupedExpenses(@Path("id") userId: String): Response<Map<String, ExpenseGroupedData>>
+
+    @GET("/users/{id}/spendingbyday")
+    suspend fun getDaySpending(
+        @Path("id") id: String,
+        @Query("date") date: String
+    ): Response<List<SpendingItem>>
 }
 

@@ -1,59 +1,99 @@
 package com.example.uas
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CalendarView
+import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.uas.adapter.RVAdapter
+import com.example.uas.data.SpendingItem
+import com.example.uas.preference.SharedPreferencesManager
+import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CalendarFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CalendarFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var calendarView: CalendarView
+    private lateinit var dateInfoTextView: TextView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var rvAdapter: RVAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private val sharedPreferencesManager by lazy {
+        SharedPreferencesManager(requireContext())
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CalendarFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        recyclerView = view.findViewById(R.id.recyclerview)
+        rvAdapter = RVAdapter(emptyList()) // Pass an initial empty list
+
+        // Set up RecyclerView with the adapter
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = rvAdapter
+        }
+
+        calendarView = view.findViewById(R.id.calendarView)
+        dateInfoTextView = view.findViewById(R.id.dateInfoTextView)
+
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val date = "$dayOfMonth-${month + 1}-$year"
+            val userId = sharedPreferencesManager.userId ?: ""
+            lifecycleScope.launch {
+                val spending = getDaySpending(userId, date)
+                if (spending != null) {
+                    // Update RVAdapter with the new list of spending items
+                    rvAdapter.updateData(spending)
+                    recyclerView.visibility = View.VISIBLE
+                } else {
+                    // Handle case where there is no spending data
+                    recyclerView.visibility = View.GONE
+                }
+
+                // Update total in TextView as needed
+                var total = 0.0
+                for (item in spending.orEmpty()) {
+                    total += item.amount
+                }
+                dateInfoTextView.text = "Total: Rp ${formatPrice(total)}"
                 }
             }
+
+        }
     }
+
+    private suspend fun getDaySpending(id: String, date: String): List<SpendingItem>? {
+        return try {
+            val response = RetrofitClient.expenseApiService.getDaySpending(id, date)
+            if (response.isSuccessful) {
+                Log.d("CalendarFragment", "API response: ${response.body()}")
+                response.body()
+
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+
+    }
+
+fun formatPrice(price: Double): String {
+    val formatter = java.text.NumberFormat.getInstance(Locale("id", "ID"))
+    return formatter.format(price)
 }

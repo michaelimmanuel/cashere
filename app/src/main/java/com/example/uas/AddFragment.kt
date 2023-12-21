@@ -75,7 +75,7 @@ class AddFragment : Fragment() {
         val day = datePicker.dayOfMonth
         val month = datePicker.month
         val year = datePicker.year
-        val formattedDate = formatDate(day, month, year)
+        val formattedDate = "" + day + "-" + (month + 1) + "-" + year
 //        get user id from shared preferences
         val userId = sharedPreferencesManager.userId
 

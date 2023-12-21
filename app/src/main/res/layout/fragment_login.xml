@@ -28,7 +28,8 @@
         android:layout_below="@id/imageViewLogo"
         android:layout_centerInParent="true"
         android:layout_margin="16dp"
-        android:background="#FFFFFF">
+        android:background="#FFFFFF"/>
+
 
     <TextView
         android:id="@+id/loginTitleTextView"

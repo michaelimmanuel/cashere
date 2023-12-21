@@ -88,10 +88,8 @@ class MainFragment : Fragment() {
                 data?.let {
                     val parsedData = it.mapValues { entry ->
                         val dailySpending = entry.value
-                        val date = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).parse(dailySpending.date)
-                        val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
                         ExpenseGroupedData(
-                            date = formattedDate,
+                            date = dailySpending.date,
                             total = dailySpending.total,
                             count = dailySpending.count,
                             items = dailySpending.items
@@ -148,9 +146,9 @@ class MainFragment : Fragment() {
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = "Total: ${dailySpending.total}",
+                        text = "Total: Rp ${formatPrice(dailySpending.total)}",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
+                        fontSize = 12.sp
                     )
                 }
 
@@ -169,10 +167,15 @@ class MainFragment : Fragment() {
                 .padding(vertical = 8.dp)
         ) {
             Text(text = "Name: ${spendingItem.name}")
-            Text(text = "Amount: ${spendingItem.amount}")
+            Text(text = "Amount: Rp ${formatPrice(spendingItem.amount)}")
             Text(text = "Description: ${spendingItem.desc}")
             Text(text = "Type: ${spendingItem.type}")
             Text(text = "Date: ${spendingItem.date}")
         }
+    }
+
+    fun formatPrice(price: Double): String {
+        val formatter = java.text.NumberFormat.getInstance(Locale("id", "ID"))
+        return formatter.format(price)
     }
 }
